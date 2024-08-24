@@ -27,5 +27,15 @@
  */
 
 import './index.css';
+import { Router } from './router';
 
 console.log('👋 This message is being logged by "renderer.ts", included via Vite');
+
+const initializeApp = async () => {
+  await Router.addRoute('/login', 'auth/login.html');
+};
+
+initializeApp()
+  .then(() => Router.navigate('/login'));
+
+

@@ -1,5 +1,6 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
+import fs from 'fs';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -51,3 +52,17 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
+ipcMain.on('load-page', (event, filePath) => {
+       const srcDir = path.join(__dirname, '..', '..', 'src');
+  const safeFilePath = path.join(srcDir, filePath);
+
+  fs.readFile(safeFilePath, 'utf-8', (err, data) => {
+    if (err) {
+      event.reply('load-page-reply', { error: err.message });
+      return;
+    }
+
+    event.reply('load-page-reply', { html: data });
+  });
+});
