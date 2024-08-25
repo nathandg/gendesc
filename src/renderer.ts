@@ -26,16 +26,22 @@
  * ```
  */
 
+import { AuthController } from './auth/auth.controller';
+import { AuthModel } from './auth/auth.model';
+import { AuthView } from './auth/auth.view';
+
 import './index.css';
 import { Router } from './router';
 
 console.log('👋 This message is being logged by "renderer.ts", included via Vite');
 
 const initializeApp = async () => {
-  await Router.addRoute('/login', 'auth/login.html');
+  
+  await Router.addRoute('/login', 'auth/login.html'),
+  await Router.addRoute('/register', 'auth/register.html');
+
+  Router.navigate('/login');
+  new AuthController(new AuthModel(), new AuthView());
 };
 
-initializeApp()
-  .then(() => Router.navigate('/login'));
-
-
+initializeApp();

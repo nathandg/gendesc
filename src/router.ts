@@ -4,13 +4,14 @@ export class Router {
 
   static getHtmlFromFilePath(filePath: string) {
     return new Promise((resolve, reject) => {
-      console.log('api.loadPage(filePath)', filePath);
+      console.log('Criando página com o arquivo:', filePath);
       window.api.loadPage(filePath);
       
       window.api.onPageLoaded((response) => {
         if (response.error) {
           reject(response.error);
         } else {
+          console.log('Página criada com sucesso:', response.html);
           resolve(response.html);
         }
       });
@@ -34,7 +35,10 @@ export class Router {
       throw new Error(`Route not found: ${path}`);
     }
 
+    if (!app) {
+      throw new Error('Element with id "app" not found');
+    }
+
     app.innerHTML = html;
   }
-
 }
