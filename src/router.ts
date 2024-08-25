@@ -1,6 +1,7 @@
 export class Router {
   
   static routes: { [key: string]: string } = {};
+  static routeChangeCallbacks: Array<(path: string) => void> = [];
 
   static getHtmlFromFilePath(filePath: string) {
     return new Promise((resolve, reject) => {
@@ -31,14 +32,15 @@ export class Router {
     const html = Router.routes[path];
     const app = document.getElementById('app');
 
-    if (!html) {
-      throw new Error(`Route not found: ${path}`);
-    }
-
-    if (!app) {
-      throw new Error('Element with id "app" not found');
+    if (!html || !app) {
+      throw new Error('Failed to navigate to path: ' + path);
     }
 
     app.innerHTML = html;
+    Router.routeChangeCallbacks.forEach(callback => callback(path));
+  }
+
+  static onRouteChange(callback: (path: string) => void) {
+    Router.routeChangeCallbacks.push(callback);
   }
 }

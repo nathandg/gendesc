@@ -8,5 +8,18 @@ export class AuthController {
   constructor(model: AuthModel, view: AuthView) {
     this.model = model;
     this.view = view;
+    this.view.setController(this);
   }
+
+  login = async (username: string, password: string) => {
+    if (!username || !password) {
+      return { type: 'danger', message: 'Usuário e senha são obrigatórios' };
+    }
+
+    if (username !== 'admin' || password !== 'admin') {
+      return { type: 'danger', message: 'Usuário ou senha inválidos' };
+    }
+
+    return { type: 'success', message: 'Login efetuado com sucesso' };
+  };
 }
