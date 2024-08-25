@@ -1,3 +1,4 @@
+import { AlertTypes } from '../../src/utils/types';
 import { AuthModel } from './auth.model';
 import { AuthView } from './auth.view';
 
@@ -13,13 +14,25 @@ export class AuthController {
 
   login = async (username: string, password: string) => {
     if (!username || !password) {
-      return { type: 'danger', message: 'Usuário e senha são obrigatórios' };
+      return { type: AlertTypes.Warning, message: 'Usuário e senha são obrigatórios' };
     }
 
     if (username !== 'admin' || password !== 'admin') {
-      return { type: 'danger', message: 'Usuário ou senha inválidos' };
+      return { type: AlertTypes.Danger, message: 'Usuário ou senha inválidos' };
     }
 
-    return { type: 'success', message: 'Login efetuado com sucesso' };
+    return { type: AlertTypes.Success, message: 'Login efetuado com sucesso' };
+  };
+
+  register = async (username: string, password: string, confirmPassword: string) => {
+    if (!username || !password || !confirmPassword) {
+      return { type: AlertTypes.Warning, message: 'Preencha todos os campos' };
+    }
+
+    if (password !== confirmPassword) {
+      return { type: AlertTypes.Info, message: 'Senhas não conferem' };
+    }
+
+    return { type: AlertTypes.Success, message: 'Usuário cadastrado com sucesso' };
   };
 }

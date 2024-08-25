@@ -1,3 +1,4 @@
+import { AlertTypes } from '../../src/utils/types';
 import { Router } from '../../src/router';
 import { AuthController } from './auth.controller';
 import './index.css';
@@ -51,7 +52,8 @@ export class AuthView {
       throw new Error('register.html elements not found');
     }
 
-    this.loginLink.addEventListener('click', this.handleRedirectToLogin);     
+    this.loginLink.addEventListener('click', this.handleRedirectToLogin);
+    this.registerForm.addEventListener('submit', this.registerSubmitHandler);     
   };
 
   private loginSubmitHandler = async (event: Event) => {
@@ -62,18 +64,34 @@ export class AuthView {
 
     try {
       const response = await this.controller.login(username, password);
-      this.createAlert(response.type, response.message);
+      this.createAlert(response.type, response.message, this.loginForm);
     } catch (error) {
-      this.createAlert('danger', error.message);
+      this.createAlert(AlertTypes.Danger, error.message, this.loginForm);
     }
     this.loginForm.reset();
   };
 
-  private createAlert = (type: string, message: string) => {
+  private registerSubmitHandler = async (event: Event) => {
+    event.preventDefault();
+    const formData = new FormData(this.registerForm);
+    const username = formData.get('username') as string;
+    const password = formData.get('password') as string;
+    const confirmPassword = formData.get('confirm-password') as string;
+
+    try {
+      const response = await this.controller.register(username, password, confirmPassword);
+      this.createAlert(response.type, response.message, this.registerForm);
+    } catch (error) {
+      this.createAlert(AlertTypes.Danger, error.message, this.registerForm);
+    }
+    this.registerForm.reset();
+  };
+
+  private createAlert = (type: string, message: string, form: HTMLFormElement) => {
     const alert = document.createElement('div');
     alert.className = `alert alert-${type}`;
     alert.innerText = message;
-    this.loginForm.insertBefore(alert, this.loginForm.firstChild);
+    form.insertBefore(alert, form.firstChild);
     setTimeout(() => alert.remove(), 1500);
   };
 
