@@ -1,3 +1,4 @@
+import { Router } from '../../src/router';
 import { AlertTypes } from '../../src/utils/types';
 import { AuthModel } from './auth.model';
 import { AuthView } from './auth.view';
@@ -21,6 +22,7 @@ export class AuthController {
       return { type: AlertTypes.Danger, message: 'Usuário ou senha inválidos' };
     }
 
+    Router.navigate('/home');
     return { type: AlertTypes.Success, message: 'Login efetuado com sucesso' };
   };
 

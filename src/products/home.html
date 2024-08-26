@@ -1,0 +1,44 @@
+<section class="home-page">
+  <div class="left">
+    <div class="profile">
+      <p class="h4"><i class="bi bi-person-circle"></i></p>
+      <p class="h4">nathandg</p>
+      <button class="btn btn-outline-secondary">Sair</button>
+    </div>
+
+    <div class="divider">
+      <p class="h4">Meus anúncios</p>
+      <div class="divider-line"></div>
+      <div id="products"></div>
+    </div>
+  </div>
+
+  <div class="right">
+    <form id="ai-form">
+      <div class="ai-form">
+        <div class="img-inputs">
+          <div class="image-preview mt-3">
+            <dotlottie-player id="lottie" src="https://lottie.host/3ca53fd8-5a83-48f9-9550-1d552a08d1f9/vjxBYvl77K.json" background="transparent" speed="0.5" loop autoplay></dotlottie-player>
+            <img id="img-preview" src="./../assets/img.jpeg" alt="Preview" class="img-thumbnail" style="display:none; max-width: 300px;">
+          </div>
+          <input name="file-input" class="form-control" type="file" id="file-input" accept="image/*">
+        </div>
+
+        <div class="text-inputs">
+          <div class="mb-3">
+            <label for="titleInput" class="form-label">Título</label>
+            <input name="title-input" class="form-control" type="text" id="title-input" placeholder="Digite o título do produto">
+          </div>
+
+          <div class="mb-3">
+            <label for="descriptionInput" class="form-label">Descrição</label>
+            <textarea name="description-input" class="form-control" id="description-input" rows="6"
+              placeholder="Digite a descrição do produto"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-dark w-50">Gerar</button>
+    </form>
+  </div>
+</section>
