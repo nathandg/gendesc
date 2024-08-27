@@ -1,3 +1,4 @@
+import { AuthModel } from '../../src/auth/auth.model';
 import { ProductsModel } from './products.model';
 import { ProductsView } from './products.view';
 
@@ -9,6 +10,10 @@ export class ProductsController {
     this.productsModel = productsModel;
     this.productsView = productsView;
     this.productsView.setController(this);
+  }
+
+  async logout() {
+    await AuthModel.logout();
   }
 
   generateDetails(file: File, formTitle: string, formDescription: string) {

@@ -13,21 +13,22 @@ export class AuthController {
     this.view.setController(this);
   }
 
-  login = async (username: string, password: string) => {
-    if (!username || !password) {
+  login = async (email: string, password: string) => {
+    if (!email || !password) {
       return { type: AlertTypes.Warning, message: 'Usuário e senha são obrigatórios' };
     }
 
-    if (username !== 'admin' || password !== 'admin') {
+    try {
+      await this.model.login(email, password);
+      Router.navigate('/home');
+      return { type: AlertTypes.Success, message: 'Login efetuado com sucesso' };
+    } catch (error) {
       return { type: AlertTypes.Danger, message: 'Usuário ou senha inválidos' };
     }
-
-    Router.navigate('/home');
-    return { type: AlertTypes.Success, message: 'Login efetuado com sucesso' };
   };
 
-  register = async (username: string, password: string, confirmPassword: string) => {
-    if (!username || !password || !confirmPassword) {
+  register = async (email: string, password: string, confirmPassword: string) => {
+    if (!email || !password || !confirmPassword) {
       return { type: AlertTypes.Warning, message: 'Preencha todos os campos' };
     }
 
@@ -35,6 +36,12 @@ export class AuthController {
       return { type: AlertTypes.Info, message: 'Senhas não conferem' };
     }
 
-    return { type: AlertTypes.Success, message: 'Usuário cadastrado com sucesso' };
+    try {
+      await this.model.register(email, password);
+      Router.navigate('/login');
+      return { type: AlertTypes.Success, message: 'Usuário cadastrado com sucesso' };
+    } catch (error) {
+      return { type: AlertTypes.Danger, message: 'Erro ao cadastrar usuário' };
+    }
   };
 }

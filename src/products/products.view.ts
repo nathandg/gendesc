@@ -4,6 +4,8 @@ import { ProductsController } from './products.controller';
 
 export class ProductsView {
   private controller: ProductsController;
+  private username: HTMLParagraphElement;
+  private logoutButton: HTMLButtonElement;
   private productsDiv: HTMLDivElement;
   private aiForm: HTMLFormElement;
   private fileInput: HTMLInputElement;
@@ -22,23 +24,26 @@ export class ProductsView {
 
   private handleRouteChange(path: string) {
     if (path === '/home') {
-      console.log('Building home page');
+      this.username = document.getElementById('username') as HTMLParagraphElement;
+      this.logoutButton = document.getElementById('logout-button') as HTMLButtonElement;
+      this.productsDiv = document.getElementById('products') as HTMLDivElement;
       this.aiForm = document.getElementById('ai-form') as HTMLFormElement;
       this.fileInput = document.getElementById('file-input') as HTMLInputElement;
       this.titleInput = document.getElementById('title-input') as HTMLInputElement;
       this.descriptionInput = document.getElementById('description-input') as HTMLInputElement;
       this.imgPreview = document.getElementById('img-preview') as HTMLImageElement;
-      this.lottieContainer = document.getElementById('lottie') as HTMLDivElement; 
+      this.lottieContainer = document.getElementById('lottie') as HTMLDivElement;
 
-      if (!this.aiForm || !this.fileInput || !this.imgPreview || !this.lottieContainer || !this.titleInput || !this.descriptionInput) {
-        console.log('aiForm', this.aiForm);
-        console.log('fileInput', this.fileInput);
-        console.log('imgPreview', this.imgPreview);
-        console.log('lottieContainer', this.lottieContainer);
-        console.log('titleInput', this.titleInput);
+      if (!this.username ||!this.logoutButton || !this.aiForm || !this.fileInput || !this.imgPreview || !this.lottieContainer || !this.titleInput || !this.descriptionInput) {
         throw new Error('home.html elements not found');
       }
 
+      const user = JSON.parse(localStorage.getItem('user') as string);
+
+      this.username.innerText = user.email.split('@')[0];
+      this.logoutButton.addEventListener('click', () => {
+        this.controller.logout();
+      });
       this.aiForm.addEventListener('submit', this.handleFormSubmit.bind(this));
       this.fileInput.addEventListener('change', this.handleFileInputChange.bind(this));
       this.controller.populateProducts();
@@ -80,12 +85,6 @@ export class ProductsView {
   }
 
   renderProducts(products: Product[]) {
-    console.log('Rendering products', products);
-    if (!this.productsDiv) {
-      this.productsDiv = document.getElementById('products') as HTMLDivElement;
-    }
-    console.log('productsDiv', this.productsDiv);
-
     products.forEach((product) => {
       const productDiv = document.createElement('div');
       productDiv.className = 'product';

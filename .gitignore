@@ -90,3 +90,6 @@ typings/
 
 # Electron-Forge
 out/
+
+# Firebase Configuration
+*/**/firebase.credentials.ts

@@ -38,6 +38,7 @@ import { ProductsController } from './products/products.controller';
 import { ProductsModel } from './products/products.model';
 import { ProductsView } from './products/products.view';
 import { Router } from './router';
+import FirebaseService from './firebase/firebase.service';
 
 console.log('👋 This message is being logged by "renderer.ts", included via Vite');
 
@@ -48,7 +49,16 @@ const initializeApp = async () => {
   await Router.addRoute('/register', 'auth/register.html');
   await Router.addRoute('/home', 'products/home.html');
 
-  Router.navigate('/login');
+  FirebaseService.getInstance().initializeFirebase();
+  FirebaseService.getInstance().getAuth().onAuthStateChanged((user) => {
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+      Router.navigate('/home');
+    } else {
+      Router.navigate('/login');
+    }
+  });
+
   new AuthController(new AuthModel(), new AuthView());
   new ProductsController(new ProductsModel(), new ProductsView());
 };

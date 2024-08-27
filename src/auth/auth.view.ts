@@ -1,4 +1,3 @@
-import { AlertTypes } from '../../src/utils/types';
 import { Router } from '../../src/router';
 import { AuthController } from './auth.controller';
 import './index.css';
@@ -14,7 +13,6 @@ export class AuthView {
 
   constructor() {
     Router.onRouteChange(this.handleRouteChange.bind(this));
-    this.handleRouteChange('/login');
   }
 
   setController(controller: AuthController) {
@@ -30,7 +28,6 @@ export class AuthView {
   }
 
   private retrieveElementsFromLogin() {
-    // Login html
     this.loginForm = document.getElementById('login-form') as HTMLFormElement;
     this.loginButton = document.getElementById('login-button') as HTMLButtonElement;
     this.signupLink = document.getElementById('signup-button') as HTMLAnchorElement;
@@ -43,8 +40,6 @@ export class AuthView {
   }
 
   private retrieveElementsFromRegister = () => {
-    console.log('register');
-    // Register html
     this.registerForm = document.getElementById('register-form') as HTMLFormElement;
     this.registerButton = document.getElementById('register-button') as HTMLButtonElement;
     this.loginLink = document.getElementById('login-link') as HTMLAnchorElement;
@@ -59,31 +54,25 @@ export class AuthView {
   private loginSubmitHandler = async (event: Event) => {
     event.preventDefault();
     const formData = new FormData(this.loginForm);
-    const username = formData.get('username') as string;
+    const email = formData.get('email') as string;
     const password = formData.get('password') as string;
-
-    try {
-      const response = await this.controller.login(username, password);
-      this.createAlert(response.type, response.message, this.loginForm);
-    } catch (error) {
-      this.createAlert(AlertTypes.Danger, error.message, this.loginForm);
-    }
+    
+    const response = await this.controller.login(email, password);
+    
+    this.createAlert(response.type, response.message, this.loginForm);
     this.loginForm.reset();
   };
 
   private registerSubmitHandler = async (event: Event) => {
     event.preventDefault();
     const formData = new FormData(this.registerForm);
-    const username = formData.get('username') as string;
+    const email = formData.get('email') as string;
     const password = formData.get('password') as string;
     const confirmPassword = formData.get('confirm-password') as string;
 
-    try {
-      const response = await this.controller.register(username, password, confirmPassword);
-      this.createAlert(response.type, response.message, this.registerForm);
-    } catch (error) {
-      this.createAlert(AlertTypes.Danger, error.message, this.registerForm);
-    }
+    const response = await this.controller.register(email, password, confirmPassword);
+    
+    this.createAlert(response.type, response.message, this.registerForm);
     this.registerForm.reset();
   };
 
