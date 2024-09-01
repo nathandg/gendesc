@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI, Part } from '@google/generative-ai';
 import { geminiKey } from './gemini.key';
+import { Product } from '../../src/products/product';
 
 export class GeminiModel {
   private apiKey: string;
@@ -35,7 +36,7 @@ export class GeminiModel {
     };
   }
 
-  async generateDescriptions(file: File, title: string, description: string) {
+  async generateDescriptions(file: File, title: string, description: string) : Promise<Product> {
     const chatSession = this.model.startChat({
       generationConfig: this.generationConfig,
     });
@@ -44,7 +45,23 @@ export class GeminiModel {
     const img = await this.fileToGenerativePart(file) as Part;
 
     const result = (await chatSession.sendMessage([JSON.stringify(prompt), img])).response.text();
-    return JSON.parse(result);  
+    const resultJson = JSON.parse(result);
+    return new Product(resultJson.title, resultJson.description, img.inlineData.data);
+  }
+
+  async generateNewDescriptions(file: string, title: string, description: string) : Promise<Product> {
+    const chatSession = this.model.startChat({
+      generationConfig: this.generationConfig,
+    });
+  
+    const prompt = { title, description};
+    const img = { inlineData: { data: file, mimeType: 'image/png' } };
+
+    console.log('Prompt', prompt);
+
+    const result = (await chatSession.sendMessage([JSON.stringify(prompt), img])).response.text();
+    const resultJson = JSON.parse(result);
+    return new Product(resultJson.title, resultJson.description, img.inlineData.data);   
   }
   
 }
