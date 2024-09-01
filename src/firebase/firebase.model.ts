@@ -1,19 +1,22 @@
 import { Analytics, getAnalytics } from 'firebase/analytics';
 import { FirebaseApp, initializeApp } from 'firebase/app';
+import { Firestore, getFirestore } from 'firebase/firestore';
 import { Auth, browserLocalPersistence, getAuth, setPersistence } from 'firebase/auth';
 import { firebaseConfig } from './firebase.credentials';
+import { Router } from '../router';
 
-class FirebaseService {
-  private static instance: FirebaseService;
+class FirebaseModel {
+  private static instance: FirebaseModel;
   private app: FirebaseApp;
   private analytics: Analytics;
   private auth: Auth;
+  private firestore: Firestore;
 
-  public static getInstance(): FirebaseService {
-    if (!FirebaseService.instance) {
-      FirebaseService.instance = new FirebaseService();
+  public static getInstance(): FirebaseModel {
+    if (!FirebaseModel.instance) {
+      FirebaseModel.instance = new FirebaseModel();
     }
-    return FirebaseService.instance;
+    return FirebaseModel.instance;
   }
 
   async initializeFirebase() {
@@ -22,6 +25,7 @@ class FirebaseService {
     this.analytics = getAnalytics(this.app);
     this.auth = getAuth(this.app);
     setPersistence(this.auth, browserLocalPersistence);
+    this.firestore = getFirestore(this.app);
   }
 
   public getApp() {
@@ -36,6 +40,19 @@ class FirebaseService {
     return this.auth;
   }
 
+  public getFirestore() {
+    return this.firestore;
+  }
+
+  public getUser() {
+    const user = this.auth.currentUser;
+    if (!user) {
+      Router.navigate('/login');
+      throw new Error('User not found');
+    }
+    return user;
+  }
+
 }
 
-export default FirebaseService;
+export default FirebaseModel;

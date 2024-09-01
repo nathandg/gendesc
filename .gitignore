@@ -93,3 +93,6 @@ out/
 
 # Firebase Configuration
 */**/firebase.credentials.ts
+
+# Gemini
+*/**/gemini.key.ts

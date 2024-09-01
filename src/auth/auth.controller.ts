@@ -1,5 +1,5 @@
 import { Router } from '../../src/router';
-import { AlertTypes } from '../../src/utils/types';
+import { AlertTypes } from '../../src/types/types';
 import { AuthModel } from './auth.model';
 import { AuthView } from './auth.view';
 

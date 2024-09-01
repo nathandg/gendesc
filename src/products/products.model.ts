@@ -1,25 +1,34 @@
-import { Product } from '../../src/types/types';
+import { addDoc, collection, Firestore, getDocs, query } from 'firebase/firestore';
+import FirebaseModel from '../firebase/firebase.model';
+import { Product } from './product';
 
 export class ProductsModel {
-  private products: Product[] = [];
+  private firestore: Firestore;
 
-  getMockedProducts(): Product[] {
-    return [
-      {
-        title: 'Product 1',
-        description: 'Product 1 description',
-        img: 'https://via.placeholder.com/150',
-      },
-      {
-        title: 'Product 2',
-        description: 'Product 2 description',
-        img: 'https://via.placeholder.com/150',
-      },
-      {
-        title: 'Product 3',
-        description: 'Product 3 description',
-        img: 'https://via.placeholder.com/150',
-      },
-    ];
+  constructor() {
+    this.firestore = FirebaseModel.getInstance().getFirestore();
   }
+
+  async getProducts(): Promise<Product[]> {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const path = `users/${user.uid}/products`;
+    const productsQuery = query(collection(this.firestore, path));
+    const productsSnapshot = await getDocs(productsQuery);
+  
+    const products = productsSnapshot.docs.map(doc => {
+      const data = doc.data();
+      return new Product(data.title, data.description, data.img);
+    });
+    
+    return products;
+  }  
+
+  async createProduct(product: Product) {
+    const user = FirebaseModel.getInstance().getUser();
+
+    const userId = user.uid;
+    const productsCollectionRef = collection(this.firestore, `users/${userId}/products`);
+    await addDoc(productsCollectionRef, product);
+  }
+  
 }

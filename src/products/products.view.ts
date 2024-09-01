@@ -1,5 +1,5 @@
-import { Product } from '../../src/types/types';
 import { Router } from '../../src/router';
+import { Product } from './product';
 import { ProductsController } from './products.controller';
 
 export class ProductsView {
@@ -13,6 +13,7 @@ export class ProductsView {
   private descriptionInput: HTMLInputElement;
   private imgPreview: HTMLImageElement;
   private lottieContainer: HTMLDivElement;
+  private generateButton: HTMLButtonElement;
 
   constructor() {
     Router.onRouteChange(this.handleRouteChange.bind(this));
@@ -33,20 +34,22 @@ export class ProductsView {
       this.descriptionInput = document.getElementById('description-input') as HTMLInputElement;
       this.imgPreview = document.getElementById('img-preview') as HTMLImageElement;
       this.lottieContainer = document.getElementById('lottie') as HTMLDivElement;
+      this.generateButton = document.getElementById('generate-button') as HTMLButtonElement;
 
-      if (!this.username ||!this.logoutButton || !this.aiForm || !this.fileInput || !this.imgPreview || !this.lottieContainer || !this.titleInput || !this.descriptionInput) {
+      if (!this.username ||!this.logoutButton || !this.aiForm || !this.fileInput || !this.imgPreview || !this.lottieContainer || !this.titleInput || !this.descriptionInput || !this.generateButton) {
         throw new Error('home.html elements not found');
       }
 
-      const user = JSON.parse(localStorage.getItem('user') as string);
-
-      this.username.innerText = user.email.split('@')[0];
+      this.username.innerText = this.controller.getUsername();
       this.logoutButton.addEventListener('click', () => {
         this.controller.logout();
       });
       this.aiForm.addEventListener('submit', this.handleFormSubmit.bind(this));
       this.fileInput.addEventListener('change', this.handleFileInputChange.bind(this));
       this.controller.populateProducts();
+      this.generateButton.addEventListener('click', () => {
+        // this.controller.mockedCreateProduct();
+      });
     }
   }
 
@@ -59,8 +62,6 @@ export class ProductsView {
     const formDescription = formData.get('description-input') as string;
   
     const { title, description } = await this.controller.generateDetails(file, formTitle, formDescription);
-    console.log('Title:', title);
-    console.log('Description:', description);
   
     if (title) {
       this.titleInput.value = title;
@@ -90,7 +91,7 @@ export class ProductsView {
       productDiv.className = 'product';
 
       const img = document.createElement('img');
-      img.src = product.img;
+      img.src = product.getImg();
 
       productDiv.appendChild(img);
 
@@ -99,11 +100,11 @@ export class ProductsView {
 
       const title = document.createElement('p');
       title.className = 'text-body';
-      title.innerText = product.title;
+      title.innerText = product.getTitle();
 
       const description = document.createElement('p');
       description.className = 'text-body-secondary';
-      description.innerText = product.description;
+      description.innerText = product.getDescription();
 
       text.appendChild(title);
       text.appendChild(description);

@@ -1,11 +1,11 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import FirebaseService from '../../src/firebase/firebase.service';
+import FirebaseModel from '../firebase/firebase.model';
 
 export class AuthModel {
-  private firebaseService: FirebaseService;
+  private firebaseService: FirebaseModel;
 
   constructor() {
-    this.firebaseService = FirebaseService.getInstance();
+    this.firebaseService = FirebaseModel.getInstance();
   }
 
   async login(email: string, password: string) {
@@ -17,6 +17,6 @@ export class AuthModel {
   }
 
   static async logout() {
-    await FirebaseService.getInstance().getAuth().signOut();
+    await FirebaseModel.getInstance().getAuth().signOut();
   }
 }
